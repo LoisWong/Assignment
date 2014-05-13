@@ -139,10 +139,13 @@ public class Instruction implements Command{
 			return;
 		}
 		try {
-			File outFile = new File(report);
-			PrintWriter out = new PrintWriter(new FileWriter(outFile, true));
+			File outFile = new File(output);
+			PrintWriter out = new PrintWriter(outFile); 
+			//PrintWriter out = new PrintWriter(new FileWriter(outFile, true)); 
+			//This is for saving new records without delete old files 
 			for (Borrower b : borrowerList) {
 				out.print(b.toString());
+				out.println();
 			}
 			out.close();
 		} catch (FileNotFoundException e) {

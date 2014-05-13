@@ -1,0 +1,24 @@
+name         Connor Dunrossil
+birthday     8-4-1961
+phone        261960475
+email        ConnorDunrossil@spambob.com
+address      24 Lewin Street, KUBURA, NSW, Australia
+
+name         Mary Beor
+birthday     26-11-1972
+phone        353336907
+email        MaryBeor@spambob.com
+address      16 Yarra Street, LAWRENCE, VIC, Australia
+
+name         Jade Cumberlege
+birthday     1-1-1933
+phone        298031463
+email        JadeCumberlege@spambob.com
+address      71 Oriana Street, WARNERVALE, NSW, Australia
+
+name         Mitchell Camidge
+birthday     3-3-1935
+phone        749123670
+email        MitchellCamidge@spambob.com
+address      77 Hay Point Road, SLADE POINT, QLD, Australia
+

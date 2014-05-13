@@ -2,61 +2,67 @@ package ECLA;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class Logging{
-	private ArrayList<Borrower> recordList;
-	private int index;
 	
 	public Logging(){}
 	
 	public ArrayList<Borrower> read(String fileName){
 		
 		try{
+			ArrayList<Borrower> recordList = new ArrayList<Borrower>();
+			int index = -1;
 			File file = new File(fileName);
 			Scanner reader = new Scanner(file);
+			//System.out.println(file.getCanonicalPath());
 			String s;
-			Borrower b;
+			Borrower b = new Borrower();
 			char locationActive = 0;
-			b = new Borrower();
 			index++;
+			recordList.add(b);
 			while(reader.hasNextLine()){
-				s = reader.nextLine();
+				s = reader.nextLine().trim();
+				if(s.equals("")){
+				//There is blank line and create a new borrower
+						b = new Borrower();
+						recordList.add(b);
+						index++;
+						locationActive = 0;
+					}
 				Scanner line = new Scanner(s);
 				String cmd;
 				
 				if(line.hasNext()){
 					cmd = line.next();
-					if(cmd.equals("")){
-					//There is blank line and create a new borrower
-						b = new Borrower();
-						index++;
-						locationActive = 0;
-					}
-					else if(cmd.equalsIgnoreCase("name")){
-						b.setName(Verification.name(line.nextLine()));
-						recordList.set(index, b);
+					if(cmd.equalsIgnoreCase("name")){
+						b.setName(Verification.name(line.nextLine()).trim());
+						recordList.set(index,b);
 						locationActive = 0;
 					}
 					else if(cmd.equalsIgnoreCase("birthday")){
-						line.useDelimiter("[-\t\n\f\r]");
-						b.setBirthday(line.nextInt(), line.nextInt(), line.nextInt());
+						String date = line.nextLine().trim();
+						Scanner dateScan = new Scanner(date);
+						dateScan.useDelimiter("[-\t\n\f\r]");
+						b.setBirthday(dateScan.nextInt(), dateScan.nextInt(), dateScan.nextInt());
 						recordList.set(index, b);
 						locationActive = 0;
 					}
 					else if(cmd.equalsIgnoreCase("email")){
-						b.setEmail(Verification.email(line.nextLine()));
+						b.setEmail(Verification.email(line.nextLine().trim()));
 						recordList.set(index, b);
 						locationActive = 0;
 					}
 					else if(cmd.equalsIgnoreCase("phone")){
-						b.setPhone(Verification.phone(line.nextInt()));
+						String num = line.nextLine().trim();
+						b.setPhone(Verification.phone(Integer.parseInt(num)));
 						recordList.set(index, b);
 						locationActive = 0;
 					}
 					else if(cmd.equalsIgnoreCase("address")){
-						b.setAddress(line.nextLine());
+						b.setAddress(line.nextLine().trim());
 						recordList.set(index, b);
 						locationActive = 1;
 					}
@@ -64,7 +70,7 @@ public class Logging{
 						locationActive = 2;
 					}
 					else if(locationActive == 1){
-						String location = b.getAddress()+" "+s;
+						String location = b.getAddress()+" "+s.trim();
 						b.setAddress(location);
 						recordList.set(index, b);
 					}
@@ -75,6 +81,7 @@ public class Logging{
 						String b_name = null;
 						int l_d = 0,l_m = 0,l_y = 0,isbn = 0;
 						for(int i=0; i<temp.length; i++){
+							//temp[i] = temp[i].trim();
 							if(Pattern.matches("[0-9]*", temp[i])){
 								isbn = Integer.parseInt(temp[i]);
 							}
@@ -98,7 +105,8 @@ public class Logging{
 			reader.close();
 			return recordList;
 		}catch(Exception e){
-			System.out.println("Error: Cannot read borrowerfile "+ File.pathSeparator +e.getMessage());
+			e.printStackTrace();
+			//System.out.println("Error: Cannot read borrowerfile " + File.pathSeparator +e.getMessage());
 			return null;
 		}
 	}

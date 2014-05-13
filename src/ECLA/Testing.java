@@ -3,14 +3,14 @@ package ECLA;
 import java.util.ArrayList;
 
 public class Testing {
-	public static void main(String[] args){
+	/*public static void main(String[] args){
 		
 		ArrayList<Borrower> borrower = new ArrayList<Borrower>();
 		
 		//create an object b
 		Borrower b = new Borrower();
 		//create an object in index 0
-		borrower.add(new Borrower("aaa",1,1,1987,654321,"aaa@mail.com","Broadway"));
+		//borrower.add(new Borrower("aaa",1,1,1987,654321,"aaa@mail.com","Broadway"));
 		
 		//add object b to list
 		borrower.add(b);
@@ -36,5 +36,5 @@ public class Testing {
 			// TODO: handle exception
 			System.out.println("List not find");
 		}
-	}
+	}*/
 }

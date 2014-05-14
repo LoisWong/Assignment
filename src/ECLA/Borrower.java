@@ -15,8 +15,15 @@ public class Borrower {
 	public Borrower(String report) throws IOException{
 		
 	}
-	public void addBook(String b_name, int l_d, int l_m, int l_y, int isbn){
-		booklist.add(new Book(b_name,l_d, l_m, l_y, isbn));
+	public void addBook(String b_name, int l_d, int l_m, int l_y, long isbn){
+		this.booklist.add(new Book(b_name,l_d, l_m, l_y, isbn));
+	}
+	public String getBook(){
+		String Booklist = null;
+		for (Book b : booklist){
+			Booklist += b.getBook() + "\n";
+		}
+		return Booklist;
 	}
 	
 	public void setName(String nm){name = nm;}
@@ -54,6 +61,9 @@ public class Borrower {
 		}
 		if (this.address!=null){
 			result +="address      " + this.address +System.getProperty("line.separator");
+		}
+		if (this.booklist.size() != 0){
+			result +="booklist     " + this.getBook();
 		}
 		return result;
 	}

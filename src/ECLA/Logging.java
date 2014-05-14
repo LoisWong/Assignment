@@ -2,14 +2,14 @@ package ECLA;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-public class Logging{
+public class Logging implements Command{
 	
 	public Logging(){}
 	
+	@Override
 	public ArrayList<Borrower> read(String fileName){
 		
 		try{
@@ -67,7 +67,31 @@ public class Logging{
 						locationActive = 1;
 					}
 					else if(cmd.equalsIgnoreCase("booklist")){
-						locationActive = 2;
+						if (line.hasNext()) {
+							String data = line.nextLine();
+							String[] temp = data.split("\\s*,\\s*");
+							String b_name = null;
+							int l_d = 0, l_m = 0, l_y = 0;
+							long isbn = 0;
+							for (int i = 0; i < temp.length; i++) {
+								// String detail = temp[i].trim();
+								if (Pattern.matches("[0-9]*\\W", temp[i])) {
+									isbn = Integer.parseInt(temp[i]);
+								} else if (Pattern.matches(
+										"^\\d{1,2}-\\d{1,2}-\\d{4}$", temp[i])) {
+									Scanner dateScan = new Scanner(temp[i]);
+									dateScan.useDelimiter("[-\t\n\f\r]");
+									l_d = dateScan.nextInt();
+									l_m = dateScan.nextInt();
+									l_y = dateScan.nextInt();
+								} else if (!Pattern.matches("[0-9]*\\W",
+										temp[i]))
+									b_name = temp[i];
+							}
+							b.addBook(b_name, l_d, l_m, l_y, isbn);
+							recordList.set(index, b);
+							}
+							locationActive = 2;
 					}
 					else if(locationActive == 1){
 						String location = b.getAddress()+" "+s.trim();
@@ -75,24 +99,22 @@ public class Logging{
 						recordList.set(index, b);
 					}
 					else if(locationActive == 2){
-						String data = line.nextLine();
-						String [] temp = data.split(",");
-						
+						String[] temp = s.split("\\s*,\\s*");
 						String b_name = null;
-						int l_d = 0,l_m = 0,l_y = 0,isbn = 0;
-						for(int i=0; i<temp.length; i++){
-							//temp[i] = temp[i].trim();
-							if(Pattern.matches("[0-9]*", temp[i])){
+						int l_d = 0, l_m = 0, l_y = 0;
+						long isbn = 0;
+						for (int i = 0; i < 3; i++) {
+							//String detail = temp[i].trim();
+							if (Pattern.matches("[0-9]*\\W", temp[i])) {
 								isbn = Integer.parseInt(temp[i]);
-							}
-							else if(Pattern.matches("^\\d{1,2}-\\d{1,2}-\\d{4}$", temp[i])){
+							} else if (Pattern.matches(
+									"^\\d{1,2}-\\d{1,2}-\\d{4}$", temp[i])) {
 								Scanner dateScan = new Scanner(temp[i]);
 								dateScan.useDelimiter("[-\t\n\f\r]");
 								l_d = dateScan.nextInt();
 								l_m = dateScan.nextInt();
 								l_y = dateScan.nextInt();
-							}
-							else 
+							} else
 								b_name = temp[i];
 						}
 						b.addBook(b_name, l_d, l_m, l_y, isbn);
@@ -121,7 +143,7 @@ public class Logging{
 		return copyList;
 	}
 	
-	/*@Override
+	/*
 	public void write(ArrayList<Borrower> borrowerList, String output) throws IOException {
 		if(borrowerList.size()==0){
 			System.out.println("no borrower!");
@@ -129,7 +151,8 @@ public class Logging{
 		}
 		try {
 			File outFile = new File(output);
-			PrintWriter out = new PrintWriter(outFile); 
+			PrintWriter out = new PrintWriter(new FileWriter(outFile, true)); 
+			//This is for saving new records without delete old files 
 			for (Borrower b : borrowerList) {
 				out.print(b.toString());
 			}

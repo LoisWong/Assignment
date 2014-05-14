@@ -2,7 +2,6 @@ package ECLA;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -141,8 +140,6 @@ public class Instruction implements Command{
 		try {
 			File outFile = new File(output);
 			PrintWriter out = new PrintWriter(outFile); 
-			//PrintWriter out = new PrintWriter(new FileWriter(outFile, true)); 
-			//This is for saving new records without delete old files 
 			for (Borrower b : borrowerList) {
 				out.print(b.toString());
 				out.println();

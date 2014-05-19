@@ -3,10 +3,10 @@ package ECLA;
 public class Book {
 	String title;
 	Date lenddate = new Date();
-	String ISBN;
+	long ISBN;
 	
 	public Book(){}
-	public Book(String b_name, int l_d, int l_m, int l_y, String ISBN){
+	public Book(String b_name, int l_d, int l_m, int l_y, long ISBN){
 		
 		title = b_name;
 		lenddate.day = l_d;

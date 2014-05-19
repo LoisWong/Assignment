@@ -111,12 +111,12 @@ public class Instruction implements Command{
 			for (int i=0; i<row.length; i++) {
 				String[] temp = row[i].split("\\s+");
 				String b_name = null;
-				String isbn = null;
+				long isbn = 0;
 				int l_d = 0, l_m = 0, l_y = 0;
 				for (int j = 0; j < temp.length; j++) {
 					String detail = temp[i].trim();
 					if (detail.length() == 13) {
-						isbn = detail;
+						isbn = Long.parseLong(detail);
 					} else if (Pattern.matches("^\\d{1,2}-\\d{1,2}-\\d{4}$",
 							detail)) {
 						Scanner dateScan = new Scanner(detail);

@@ -72,12 +72,12 @@ public class Logging implements Command{
 							String[] temp = data.split("\\s*,\\s*");
 							String b_name = null;
 							int l_d = 0, l_m = 0, l_y = 0;
-							String isbn = null;
+							long isbn = 0;
 							for (int i = 0; i < temp.length; i++) {
 								String detail = temp[i].trim();
-								//if (Pattern.matches("[0-9]*\\W", detail)) {
-								if (detail.length() == 13){
-									isbn = detail;
+								if (Pattern.matches("^\\d{13}$", detail)) {
+								//if (detail.length() == 13){
+									isbn = Long.parseLong(detail);
 								} else if (Pattern.matches(
 										"^\\d{1,2}-\\d{1,2}-\\d{4}$", detail)) {
 									Scanner dateScan = new Scanner(detail);
@@ -102,11 +102,12 @@ public class Logging implements Command{
 						String[] temp = s.split("\\s*,\\s*");
 						String b_name = null;
 						int l_d = 0, l_m = 0, l_y = 0;
-						String isbn = null;
+						long isbn = 0;
 						for (int i = 0; i < 3; i++) {
 							String detail = temp[i].trim();
-							if (detail.length() == 13) {
-								isbn = detail;
+							if (Pattern.matches("^\\d{13}$", detail)) {
+							//if (detail.length() == 13) {
+								isbn = Long.parseLong(detail);
 							} else if (Pattern.matches(
 									"^\\d{1,2}-\\d{1,2}-\\d{4}$", detail)) {
 								Scanner dateScan = new Scanner(detail);

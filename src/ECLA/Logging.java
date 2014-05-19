@@ -68,25 +68,25 @@ public class Logging implements Command{
 					}
 					else if(cmd.equalsIgnoreCase("booklist")){
 						if (line.hasNext()) {
-							String data = line.nextLine();
+							String data = line.nextLine().trim();
 							String[] temp = data.split("\\s*,\\s*");
 							String b_name = null;
 							int l_d = 0, l_m = 0, l_y = 0;
-							long isbn = 0;
+							String isbn = null;
 							for (int i = 0; i < temp.length; i++) {
-								// String detail = temp[i].trim();
-								if (Pattern.matches("[0-9]*\\W", temp[i])) {
-									isbn = Integer.parseInt(temp[i]);
+								String detail = temp[i].trim();
+								//if (Pattern.matches("[0-9]*\\W", detail)) {
+								if (detail.length() == 13){
+									isbn = detail;
 								} else if (Pattern.matches(
-										"^\\d{1,2}-\\d{1,2}-\\d{4}$", temp[i])) {
-									Scanner dateScan = new Scanner(temp[i]);
+										"^\\d{1,2}-\\d{1,2}-\\d{4}$", detail)) {
+									Scanner dateScan = new Scanner(detail);
 									dateScan.useDelimiter("[-\t\n\f\r]");
 									l_d = dateScan.nextInt();
 									l_m = dateScan.nextInt();
 									l_y = dateScan.nextInt();
-								} else if (!Pattern.matches("[0-9]*\\W",
-										temp[i]))
-									b_name = temp[i];
+								} else
+									b_name = detail;
 							}
 							b.addBook(b_name, l_d, l_m, l_y, isbn);
 							recordList.set(index, b);
@@ -102,20 +102,20 @@ public class Logging implements Command{
 						String[] temp = s.split("\\s*,\\s*");
 						String b_name = null;
 						int l_d = 0, l_m = 0, l_y = 0;
-						long isbn = 0;
+						String isbn = null;
 						for (int i = 0; i < 3; i++) {
-							//String detail = temp[i].trim();
-							if (Pattern.matches("[0-9]*\\W", temp[i])) {
-								isbn = Integer.parseInt(temp[i]);
+							String detail = temp[i].trim();
+							if (detail.length() == 13) {
+								isbn = detail;
 							} else if (Pattern.matches(
-									"^\\d{1,2}-\\d{1,2}-\\d{4}$", temp[i])) {
-								Scanner dateScan = new Scanner(temp[i]);
+									"^\\d{1,2}-\\d{1,2}-\\d{4}$", detail)) {
+								Scanner dateScan = new Scanner(detail);
 								dateScan.useDelimiter("[-\t\n\f\r]");
 								l_d = dateScan.nextInt();
 								l_m = dateScan.nextInt();
 								l_y = dateScan.nextInt();
 							} else
-								b_name = temp[i];
+								b_name = detail;
 						}
 						b.addBook(b_name, l_d, l_m, l_y, isbn);
 						recordList.set(index, b);

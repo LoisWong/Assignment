@@ -15,7 +15,7 @@ public class Borrower {
 	public Borrower(String report) throws IOException{
 		
 	}
-	public void addBook(String b_name, int l_d, int l_m, int l_y, long isbn){
+	public void addBook(String b_name, int l_d, int l_m, int l_y, String isbn){
 		this.booklist.add(new Book(b_name,l_d, l_m, l_y, isbn));
 	}
 	public String getBook(){

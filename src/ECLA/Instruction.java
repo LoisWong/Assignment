@@ -111,19 +111,21 @@ public class Instruction implements Command{
 			for (int i=0; i<row.length; i++) {
 				String[] temp = row[i].split("\\s+");
 				String b_name = null;
-				int l_d = 0, l_m = 0, l_y = 0, isbn = 0;
+				String isbn = null;
+				int l_d = 0, l_m = 0, l_y = 0;
 				for (int j = 0; j < temp.length; j++) {
-					if (Pattern.matches("[0-9]*", temp[i])) {
-						isbn = Integer.parseInt(temp[i]);
+					String detail = temp[i].trim();
+					if (detail.length() == 13) {
+						isbn = detail;
 					} else if (Pattern.matches("^\\d{1,2}-\\d{1,2}-\\d{4}$",
-							temp[i])) {
-						Scanner dateScan = new Scanner(temp[i]);
+							detail)) {
+						Scanner dateScan = new Scanner(detail);
 						dateScan.useDelimiter("[-\t\n\f\r]");
 						l_d = dateScan.nextInt();
 						l_m = dateScan.nextInt();
 						l_y = dateScan.nextInt();
 					} else
-						b_name = temp[i];
+						b_name = detail;
 				}
 				borrower.addBook(b_name, l_d, l_m, l_y, isbn);
 			}

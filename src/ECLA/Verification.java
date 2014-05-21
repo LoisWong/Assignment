@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public class Verification {
 	public static String email(String email) throws Exception{
-		Pattern checkEmail = Pattern.compile(".+@.+\\.[a-z]+");
+		Pattern checkEmail = Pattern.compile("^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$");
 		if (!checkEmail.matcher(email).matches()) {
 		    //throw new Exception("Invalid email address");
 			return null;

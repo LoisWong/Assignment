@@ -31,40 +31,60 @@ public class Logging implements Command{
 						recordList.add(b);
 						index++;
 						locationActive = 0;
-					}
+				}
 				Scanner line = new Scanner(s);
 				String cmd;
 				
 				if(line.hasNext()){
 					cmd = line.next();
 					if(cmd.equalsIgnoreCase("name")){
-						b.setName(Verification.name(line.nextLine()).trim());
+						if(line.hasNextLine()){
+							b.setName(Verification.name(line.nextLine()).trim());
+						}
+						else{
+							b.setName("none");
+						}
 						recordList.set(index,b);
 						locationActive = 0;
 					}
 					else if(cmd.equalsIgnoreCase("birthday")){
-						String date = line.nextLine().trim();
-						Scanner dateScan = new Scanner(date);
-						dateScan.useDelimiter("[-\t\n\f\r]");
-						b.setBirthday(dateScan.nextInt(), dateScan.nextInt(), dateScan.nextInt());
+						if(line.hasNextLine()){
+							String date = line.nextLine().trim();
+							Scanner dateScan = new Scanner(date);
+							dateScan.useDelimiter("[-\t\n\f\r]");
+							b.setBirthday(dateScan.nextInt(), dateScan.nextInt(), dateScan.nextInt());
+						}
+						else{
+							b.setBirthday(0, 0, 0);
+						}
 						recordList.set(index, b);
 						locationActive = 0;
 					}
 					else if(cmd.equalsIgnoreCase("email")){
-						b.setEmail(Verification.email(line.nextLine().trim()));
+						if (line.hasNextLine()) {
+							b.setEmail(Verification.email(line.nextLine()
+									.trim()));
 						recordList.set(index, b);
+						}
 						locationActive = 0;
 					}
 					else if(cmd.equalsIgnoreCase("phone")){
-						String num = line.nextLine().trim();
-						b.setPhone(Verification.phone(Integer.parseInt(num)));
-						recordList.set(index, b);
+						if (line.hasNextLine()) {
+							//String num = line.nextLine().trim();
+							String num = line.nextLine().replaceFirst("^0*", "").trim();
+							if (num.length() < 13){
+								b.setPhone(Verification.phone(Integer.parseInt(num)));
+								recordList.set(index, b);
+							}
+						}
 						locationActive = 0;
 					}
 					else if(cmd.equalsIgnoreCase("address")){
-						b.setAddress(line.nextLine().trim());
-						recordList.set(index, b);
-						locationActive = 1;
+						if (line.hasNextLine()) {
+							b.setAddress(line.nextLine().trim());
+							recordList.set(index, b);
+							locationActive = 1;
+						}
 					}
 					else if(cmd.equalsIgnoreCase("booklist")){
 						if (line.hasNext()) {
@@ -73,25 +93,28 @@ public class Logging implements Command{
 							String b_name = null;
 							int l_d = 0, l_m = 0, l_y = 0;
 							long isbn = 0;
-							for (int i = 0; i < temp.length; i++) {
-								String detail = temp[i].trim();
-								if (Pattern.matches("^\\d{13}$", detail)) {
-								//if (detail.length() == 13){
-									isbn = Long.parseLong(detail);
-								} else if (Pattern.matches(
-										"^\\d{1,2}-\\d{1,2}-\\d{4}$", detail)) {
-									Scanner dateScan = new Scanner(detail);
-									dateScan.useDelimiter("[-\t\n\f\r]");
-									l_d = dateScan.nextInt();
-									l_m = dateScan.nextInt();
-									l_y = dateScan.nextInt();
-								} else
-									b_name = detail;
+							if (temp.length == 3) {
+								for (int i = 0; i < temp.length; i++) {
+									String detail = temp[i].trim();
+									if (Pattern.matches("^\\d{13}$", detail)) {
+										//if (detail.length() == 13){
+										isbn = Long.parseLong(detail);
+									} else if (Pattern.matches(
+											"^\\d{1,2}-\\d{1,2}-\\d{4}$",
+											detail)) {
+										Scanner dateScan = new Scanner(detail);
+										dateScan.useDelimiter("[-\t\n\f\r]");
+										l_d = dateScan.nextInt();
+										l_m = dateScan.nextInt();
+										l_y = dateScan.nextInt();
+									} else
+										b_name = detail;
+								}
+								b.addBook(b_name, l_d, l_m, l_y, isbn);
+								recordList.set(index, b);
 							}
-							b.addBook(b_name, l_d, l_m, l_y, isbn);
-							recordList.set(index, b);
-							}
-							locationActive = 2;
+						}
+						locationActive = 2;
 					}
 					else if(locationActive == 1){
 						String location = b.getAddress()+" "+s.trim();
@@ -137,7 +160,7 @@ public class Logging implements Command{
 	public ArrayList<Borrower> removeInVData(ArrayList<Borrower> list){
 		ArrayList<Borrower> copyList = new ArrayList<Borrower>();
 		for(Borrower b : list){
-			if (!b.getName().equalsIgnoreCase("none")&&!b.getBirthday().equalsIgnoreCase("none")){
+			if (!b.getName().equalsIgnoreCase("none")&&!b.getBirthday().equalsIgnoreCase("00-00-0000")){
 				copyList.add(b);
 			}
 		}

@@ -19,9 +19,9 @@ public class Borrower {
 		this.booklist.add(new Book(b_name,l_d, l_m, l_y, isbn));
 	}
 	public String getBook(){
-		String Booklist = null;
+		String Booklist = "";
 		for (Book b : booklist){
-			Booklist += b.getBook() + "\n";
+			Booklist += b.getBook() + "\n" + "             ";
 		}
 		return Booklist;
 	}
@@ -39,13 +39,21 @@ public class Borrower {
 	public String getAddress(){return this.address;}
 	
 	public void setBirthday(int b_d, int b_m, int b_y){
-		birthday.day = b_d;
-		birthday.month = b_m;
-		birthday.year = b_y;
+		
+		if (b_d <= 31 && b_m <= 12 && b_y < 2015) {
+			birthday.day = b_d;
+			birthday.month = b_m;
+			birthday.year = b_y;
+		}
+		else{
+			birthday.day = 0;
+			birthday.month = 0;
+			birthday.year = 0;
+		}
 	}
 	public String getBirthday(){
 		String formedBD;
-		formedBD = birthday.day + "-" + birthday.month + "-" + birthday.year; 
+		formedBD = String.format("%02d", birthday.day) + "-" + String.format("%02d", birthday.month) + "-" + String.format("%04d", birthday.year); 
 		return formedBD;
 	}
 	

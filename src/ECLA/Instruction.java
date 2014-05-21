@@ -25,16 +25,18 @@ public class Instruction implements Command{
 			File file = new File(fileName);
 			Scanner reader = new Scanner(file);
 			String s;
-			Borrower borrower = new Borrower();
+			//Borrower borrower = new Borrower();
 			
 			while(reader.hasNextLine()){
 				s = reader.nextLine();
 				Scanner line = new Scanner(s);
 				String cmd;
+				Borrower borrower = new Borrower();
 				
 				while(line.hasNext()){
 					cmd = line.next();
-					if(cmd.equalsIgnoreCase("add")){
+					if(cmd.equalsIgnoreCase("add") && line.hasNextLine()){
+						int flag = 0;
 						cmd = line.nextLine();
 						String [] temp = cmd.split(";");
 						
@@ -48,12 +50,14 @@ public class Instruction implements Command{
 						for (int i=0; i<this.borrowerList.size(); i++){
 							if (borrowerList.get(i).getName().equalsIgnoreCase(borrower.getName()) && borrowerList.get(i).getBirthday().equals(borrower.getBirthday())){
 								borrowerList.set(i, borrower);
+								flag = 1;
 							}
-							else
-								borrowerList.add(borrower);
+						}
+						if (flag == 0){
+							borrowerList.add(borrower);
 						}
 					}
-					else if(cmd.equalsIgnoreCase("delete")){
+					else if(cmd.equalsIgnoreCase("delete") && line.hasNextLine()){
 						cmd = line.nextLine();
 						String [] temp = cmd.split(";");
 						
@@ -70,10 +74,22 @@ public class Instruction implements Command{
 							}
 						}
 					}
-					else if(cmd.equalsIgnoreCase("sort")){
+					else if(cmd.equalsIgnoreCase("sort") && line.hasNext()){
+						cmd = line.next().trim();
+						if(cmd.equalsIgnoreCase("name")){
+							
+						}else if(cmd.equalsIgnoreCase("birthday")){
+							
+						}else if(cmd.equalsIgnoreCase("address")){
+							
+						}else if(cmd.equalsIgnoreCase("email")){
+							
+						}else if(cmd.equalsIgnoreCase("phone")){
+							
+						}
 						
 					}
-					else if(cmd.equalsIgnoreCase("query")){
+					else if(cmd.equalsIgnoreCase("query") && line.hasNextLine()){
 						
 						
 					}
@@ -110,22 +126,22 @@ public class Instruction implements Command{
 			//In order to split different book item
 			for (int i=0; i<row.length; i++) {
 				String[] temp = row[i].split("\\s+");
-				String b_name = null;
+				String b_name = "";
 				long isbn = 0;
 				int l_d = 0, l_m = 0, l_y = 0;
 				for (int j = 0; j < temp.length; j++) {
-					String detail = temp[i].trim();
-					if (detail.length() == 13) {
-						isbn = Long.parseLong(detail);
+					//String detail = temp[i].trim();
+					if (Pattern.matches("^\\d{13}$", temp[j])) {
+						isbn = Long.parseLong(temp[j]);
 					} else if (Pattern.matches("^\\d{1,2}-\\d{1,2}-\\d{4}$",
-							detail)) {
-						Scanner dateScan = new Scanner(detail);
+							temp[j])) {
+						Scanner dateScan = new Scanner(temp[j]);
 						dateScan.useDelimiter("[-\t\n\f\r]");
 						l_d = dateScan.nextInt();
 						l_m = dateScan.nextInt();
 						l_y = dateScan.nextInt();
 					} else
-						b_name = detail;
+						b_name += temp[j] + " ";
 				}
 				borrower.addBook(b_name, l_d, l_m, l_y, isbn);
 			}

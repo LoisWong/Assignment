@@ -5,88 +5,95 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-public class Logging implements Command{
-	
-	public Logging(){}
-	
+public class Logging implements Command {
+
+	public Logging() {
+	}
+
 	@Override
-	public ArrayList<Borrower> read(String fileName){
-		
-		try{
+	public ArrayList<Borrower> read(String fileName) {
+
+		try {
 			ArrayList<Borrower> recordList = new ArrayList<Borrower>();
 			int index = -1;
 			File file = new File(fileName);
 			Scanner reader = new Scanner(file);
-			//System.out.println(file.getCanonicalPath());
+			// System.out.println(file.getCanonicalPath());
 			String s;
 			Borrower b = new Borrower();
 			char locationActive = 0;
 			index++;
 			recordList.add(b);
-			while(reader.hasNextLine()){
+			while (reader.hasNextLine()) {
 				s = reader.nextLine().trim();
-				if(s.equals("")){
-				//There is blank line and create a new borrower
-						b = new Borrower();
-						recordList.add(b);
-						index++;
-						locationActive = 0;
+				if (s.equals("")) {
+					// There is blank line and create a new borrower
+					b = new Borrower();
+					recordList.add(b);
+					index++;
+					locationActive = 0;
 				}
 				Scanner line = new Scanner(s);
 				String cmd;
-				
-				if(line.hasNext()){
+
+				if (line.hasNext()) {
 					cmd = line.next();
-					if(cmd.equalsIgnoreCase("name")){
-						if(line.hasNextLine()){
+					if (cmd.equalsIgnoreCase("name")) {
+						if (line.hasNextLine()) {
 							b.setName(Verification.name(line.nextLine()).trim());
-						}
-						else{
+						} else {
 							b.setName("none");
 						}
-						recordList.set(index,b);
+						recordList.set(index, b);
 						locationActive = 0;
-					}
-					else if(cmd.equalsIgnoreCase("birthday")){
-						if(line.hasNextLine()){
+					} else if (cmd.equalsIgnoreCase("birthday")) {
+						if (line.hasNextLine()) {
 							String date = line.nextLine().trim();
 							Scanner dateScan = new Scanner(date);
 							dateScan.useDelimiter("[-\t\n\f\r]");
-							b.setBirthday(dateScan.nextInt(), dateScan.nextInt(), dateScan.nextInt());
-						}
-						else{
+							try {
+								b.setBirthday(dateScan.nextInt(),
+										dateScan.nextInt(), dateScan.nextInt());
+							} catch (Exception e) {
+								b.setBirthday(0, 0, 0);
+							}
+						} else {
 							b.setBirthday(0, 0, 0);
 						}
 						recordList.set(index, b);
 						locationActive = 0;
-					}
-					else if(cmd.equalsIgnoreCase("email")){
+					} else if (cmd.equalsIgnoreCase("email")) {
 						if (line.hasNextLine()) {
 							b.setEmail(Verification.email(line.nextLine()
 									.trim()));
-						recordList.set(index, b);
+							recordList.set(index, b);
 						}
 						locationActive = 0;
-					}
-					else if(cmd.equalsIgnoreCase("phone")){
+					} else if (cmd.equalsIgnoreCase("phone")) {
 						if (line.hasNextLine()) {
-							//String num = line.nextLine().trim();
-							String num = line.nextLine().replaceFirst("^0*", "").trim();
-							if (num.length() < 13){
-								b.setPhone(Verification.phone(Integer.parseInt(num)));
+							String num = line.nextLine().trim();
+							// String num = line.nextLine().replaceFirst("^0*",
+							// "").trim();
+							int i = 0;
+							while (num.charAt(i) == '0') {
+								i++;
+							}
+							num = num.substring(i);
+							if (num.length() < 13) {
+								b.setPhone(Verification.phone(Integer
+										.parseInt(num)));
 								recordList.set(index, b);
 							}
 						}
 						locationActive = 0;
-					}
-					else if(cmd.equalsIgnoreCase("address")){
+					} else if (cmd.equalsIgnoreCase("address")) {
 						if (line.hasNextLine()) {
-							b.setAddress(line.nextLine().trim());
+							b.setAddress(Verification.address(line.nextLine()
+									.trim()));
 							recordList.set(index, b);
 							locationActive = 1;
 						}
-					}
-					else if(cmd.equalsIgnoreCase("booklist")){
+					} else if (cmd.equalsIgnoreCase("booklist")) {
 						if (line.hasNext()) {
 							String data = line.nextLine().trim();
 							String[] temp = data.split("\\s*,\\s*");
@@ -97,7 +104,7 @@ public class Logging implements Command{
 								for (int i = 0; i < temp.length; i++) {
 									String detail = temp[i].trim();
 									if (Pattern.matches("^\\d{13}$", detail)) {
-										//if (detail.length() == 13){
+										// if (detail.length() == 13){
 										isbn = Long.parseLong(detail);
 									} else if (Pattern.matches(
 											"^\\d{1,2}-\\d{1,2}-\\d{4}$",
@@ -115,13 +122,12 @@ public class Logging implements Command{
 							}
 						}
 						locationActive = 2;
-					}
-					else if(locationActive == 1){
-						String location = b.getAddress()+" "+s.trim();
+					} else if (locationActive == 1) {
+						String location = b.getAddress() + " "
+								+ Verification.address(s.trim());
 						b.setAddress(location);
 						recordList.set(index, b);
-					}
-					else if(locationActive == 2){
+					} else if (locationActive == 2) {
 						String[] temp = s.split("\\s*,\\s*");
 						String b_name = null;
 						int l_d = 0, l_m = 0, l_y = 0;
@@ -129,7 +135,7 @@ public class Logging implements Command{
 						for (int i = 0; i < 3; i++) {
 							String detail = temp[i].trim();
 							if (Pattern.matches("^\\d{13}$", detail)) {
-							//if (detail.length() == 13) {
+								// if (detail.length() == 13) {
 								isbn = Long.parseLong(detail);
 							} else if (Pattern.matches(
 									"^\\d{1,2}-\\d{1,2}-\\d{4}$", detail)) {
@@ -143,46 +149,30 @@ public class Logging implements Command{
 						}
 						b.addBook(b_name, l_d, l_m, l_y, isbn);
 						recordList.set(index, b);
-					}
-					else
-						System.out.println("Error! Incorrect information: " + s);
+					} else
+						System.out
+								.println("Error! Incorrect information: " + s);
 				}
 			}
 			reader.close();
 			return recordList;
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-			//System.out.println("Error: Cannot read borrowerfile " + File.pathSeparator +e.getMessage());
+			// System.out.println("Error: Cannot read borrowerfile " +
+			// File.pathSeparator +e.getMessage());
 			return null;
 		}
 	}
 
-	public ArrayList<Borrower> removeInVData(ArrayList<Borrower> list){
+	public ArrayList<Borrower> removeInVData(ArrayList<Borrower> list) {
 		ArrayList<Borrower> copyList = new ArrayList<Borrower>();
-		for(Borrower b : list){
-			if (!b.getName().equalsIgnoreCase("none")&&!b.getBirthday().equalsIgnoreCase("00-00-0000")){
+		for (Borrower b : list) {
+			if (!b.getName().equalsIgnoreCase("none")
+					&& !b.getBirthday().equalsIgnoreCase("00-00-0000")) {
 				copyList.add(b);
 			}
 		}
 		return copyList;
 	}
-	
-	/*
-	public void write(ArrayList<Borrower> borrowerList, String output) throws IOException {
-		if(borrowerList.size()==0){
-			System.out.println("no borrower!");
-			return;
-		}
-		try {
-			File outFile = new File(output);
-			PrintWriter out = new PrintWriter(new FileWriter(outFile, true)); 
-			//This is for saving new records without delete old files 
-			for (Borrower b : borrowerList) {
-				out.print(b.toString());
-			}
-			out.close();
-			} catch (FileNotFoundException e) {
-			System.out.println("file not found!"); }
-	}*/
 
 }

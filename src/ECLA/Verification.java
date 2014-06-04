@@ -1,4 +1,8 @@
 package ECLA;
+/*@Project: ${Electronic_Community_Library_Management}
+ *@Author: LuWang 
+ *@Date: ${22/05/2014} 
+ */
 
 import java.util.regex.Pattern;
 
@@ -15,9 +19,11 @@ public class Verification {
 
 	public static String name(String name) throws Exception {
 		if (!Pattern.matches("[A-Za-z\\s]+$", name)) {
+			//Illegal name will be set as "none" so that could be find later
 			return "none";
 		}
 		int i;
+		//Format name so that could be compared later 
 		String[] Name = name.split("\\s+");
 		String formatName = "";
 		for (i = 0; i < Name.length - 1; i++) {
@@ -29,6 +35,7 @@ public class Verification {
 
 	public static String address(String address) throws Exception {
 		int i;
+		//Format address so that could be compared later 
 		String[] Address = address.split("\\s+");
 		String formatAddress = "";
 		for (i = 0; i < Address.length - 1; i++) {
@@ -39,6 +46,7 @@ public class Verification {
 	}
 
 	public static int phone(int phone) throws Exception {
+		//Check if it is a legal phone number
 		if (1000000000 - phone > 90000000) {
 			return phone;
 		}

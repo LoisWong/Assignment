@@ -1,6 +1,10 @@
 package ECLA;
+/*@Project: ${Electronic_Community_Library_Management}
+ *@Author: LuWang 
+ *@Date: ${22/05/2014} 
+ */
 
-public class Book {
+public class Book extends Date{
 	String title;
 	Date lenddate = new Date();
 	long ISBN;
@@ -24,6 +28,7 @@ public class Book {
 	}
 
 	public String getBook() {
+		//Output the book's information in the format: title, dd-mm-yyyy, ISBN
 		String format;
 		format = title + "," + String.format("%02d", lenddate.day) + "-"
 				+ String.format("%02d", lenddate.month) + "-"

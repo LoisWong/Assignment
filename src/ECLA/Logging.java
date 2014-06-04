@@ -1,4 +1,8 @@
 package ECLA;
+/*@Project: ${Electronic_Community_Library_Management}
+ *@Author: LuWang 
+ *@Date: ${22/05/2014} 
+ */
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,14 +11,15 @@ import java.util.regex.Pattern;
 
 public class Logging implements Command {
 
+	private ArrayList<Borrower> recordList = new ArrayList<Borrower>();
+	
 	public Logging() {
 	}
 
 	@Override
 	public ArrayList<Borrower> read(String fileName) {
 
-		try {
-			ArrayList<Borrower> recordList = new ArrayList<Borrower>();
+		try {	
 			int index = -1;
 			File file = new File(fileName);
 			Scanner reader = new Scanner(file);
@@ -39,6 +44,7 @@ public class Logging implements Command {
 				if (line.hasNext()) {
 					cmd = line.next();
 					if (cmd.equalsIgnoreCase("name")) {
+						//Get borrower's name, if illegal then set as "none"
 						if (line.hasNextLine()) {
 							b.setName(Verification.name(line.nextLine()).trim());
 						} else {
@@ -47,6 +53,7 @@ public class Logging implements Command {
 						recordList.set(index, b);
 						locationActive = 0;
 					} else if (cmd.equalsIgnoreCase("birthday")) {
+						//Get borrower's birthday, if illegal then set as "0"
 						if (line.hasNextLine()) {
 							String date = line.nextLine().trim();
 							Scanner dateScan = new Scanner(date);
@@ -63,6 +70,7 @@ public class Logging implements Command {
 						recordList.set(index, b);
 						locationActive = 0;
 					} else if (cmd.equalsIgnoreCase("email")) {
+						//Get borrower's email, if illegal then ignore(Verification class)
 						if (line.hasNextLine()) {
 							b.setEmail(Verification.email(line.nextLine()
 									.trim()));
@@ -70,16 +78,16 @@ public class Logging implements Command {
 						}
 						locationActive = 0;
 					} else if (cmd.equalsIgnoreCase("phone")) {
+						//Get borrower's phone, delete first 0s. If illegal then set as 0(Verification class)
 						if (line.hasNextLine()) {
-							String num = line.nextLine().trim();
-							// String num = line.nextLine().replaceFirst("^0*",
-							// "").trim();
-							int i = 0;
-							while (num.charAt(i) == '0') {
-								i++;
-							}
-							num = num.substring(i);
-							if (num.length() < 13) {
+							//String num = line.nextLine().trim();
+							String num = line.nextLine().replaceFirst("^0*", "").trim();
+//							int i = 0;
+//							while (num.charAt(i) == '0') {
+//								i++;
+//							}
+//							num = num.substring(i);
+							if (num.length() < 13 && num.length() > 0) {
 								b.setPhone(Verification.phone(Integer
 										.parseInt(num)));
 								recordList.set(index, b);
@@ -87,11 +95,13 @@ public class Logging implements Command {
 						}
 						locationActive = 0;
 					} else if (cmd.equalsIgnoreCase("address")) {
+						//Get borrower's address, check illegal and format(Verification class)
 						if (line.hasNextLine()) {
 							b.setAddress(Verification.address(line.nextLine()
 									.trim()));
 							recordList.set(index, b);
 							locationActive = 1;
+							//Mark the next line still could be address
 						}
 					} else if (cmd.equalsIgnoreCase("booklist")) {
 						if (line.hasNext()) {
@@ -104,17 +114,19 @@ public class Logging implements Command {
 								for (int i = 0; i < temp.length; i++) {
 									String detail = temp[i].trim();
 									if (Pattern.matches("^\\d{13}$", detail)) {
-										// if (detail.length() == 13){
+										//Find ISBN, which is a 13 digital number
 										isbn = Long.parseLong(detail);
 									} else if (Pattern.matches(
 											"^\\d{1,2}-\\d{1,2}-\\d{4}$",
 											detail)) {
+										//Find lend date
 										Scanner dateScan = new Scanner(detail);
 										dateScan.useDelimiter("[-\t\n\f\r]");
 										l_d = dateScan.nextInt();
 										l_m = dateScan.nextInt();
 										l_y = dateScan.nextInt();
 									} else
+										//Anything else regards as the book title
 										b_name = detail;
 								}
 								b.addBook(b_name, l_d, l_m, l_y, isbn);
@@ -122,12 +134,15 @@ public class Logging implements Command {
 							}
 						}
 						locationActive = 2;
+						//Mark the next line still could be book item
 					} else if (locationActive == 1) {
+						//If there is no filed name and mark equals to 1, then this line is address
 						String location = b.getAddress() + " "
 								+ Verification.address(s.trim());
 						b.setAddress(location);
 						recordList.set(index, b);
 					} else if (locationActive == 2) {
+						//If there is no filed name and mark equals to 2, then this line is book item
 						String[] temp = s.split("\\s*,\\s*");
 						String b_name = null;
 						int l_d = 0, l_m = 0, l_y = 0;
@@ -150,21 +165,21 @@ public class Logging implements Command {
 						b.addBook(b_name, l_d, l_m, l_y, isbn);
 						recordList.set(index, b);
 					} else
-						System.out
-								.println("Error! Incorrect information: " + s);
+						System.out.println("Error! Incorrect information: " + s);
 				}
 			}
 			reader.close();
 			return recordList;
 		} catch (Exception e) {
 			e.printStackTrace();
-			// System.out.println("Error: Cannot read borrowerfile " +
+			System.out.println("Error: Cannot read borrowerfile ");
 			// File.pathSeparator +e.getMessage());
 			return null;
 		}
 	}
 
 	public ArrayList<Borrower> removeInVData(ArrayList<Borrower> list) {
+		//Remove invalid data from borrower's list
 		ArrayList<Borrower> copyList = new ArrayList<Borrower>();
 		for (Borrower b : list) {
 			if (!b.getName().equalsIgnoreCase("none")

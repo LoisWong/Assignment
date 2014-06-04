@@ -1,4 +1,8 @@
 package ECLA;
+/*@Project: ${Electronic_Community_Library_Management}
+ *@Author: LuWang 
+ *@Date: ${22/05/2014} 
+ */
 
 import java.util.ArrayList;
 
@@ -6,6 +10,10 @@ import java.util.ArrayList;
  * This class is the entry point for the COMP 5214 assignment.
  */
 public class ECL {
+	static ArrayList<Borrower> borrower;
+	static Logging logging;
+	static Instruction instruction;
+	
 	public static void main(String[] args) {
 		// EDIT THE MAIN METHOD AS NEEDED FOR YOUR ASSIGNMENT
 		// args[0] is the path to borrower file
@@ -13,8 +21,8 @@ public class ECL {
 		// args[2] is the path to the output file
 		// args[3] is the path to the report file
 		try {
-			ArrayList<Borrower> borrower = new ArrayList<Borrower>();
-			Logging logging = new Logging();
+			borrower = new ArrayList<Borrower>();
+			logging = new Logging();
 
 			borrower = logging.read(args[0]);
 			borrower = logging.removeInVData(borrower);
